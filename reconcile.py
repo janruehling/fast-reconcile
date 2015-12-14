@@ -142,7 +142,7 @@ def search(raw_query, query_type='/fast/all'):
     try:
         #FAST api requires spaces to be encoded as %20 rather than +
         url = api_base_url + '?query=' + urllib.quote(query)
-        url += '&rows=30&queryReturn=suggestall%2Cidroot%2Cauth%2cscore&suggest=autoSubject'
+        url += '&rows=30&queryReturn=suggestall%2Cidroot%2Cauth%2ctag%2cscore&suggest=autoSubject'
         url += '&queryIndex=' + query_index + '&wt=json'
         app.logger.debug("FAST API url is " + url)
         resp = requests.get(url)
@@ -153,6 +153,7 @@ def search(raw_query, query_type='/fast/all'):
     for position, item in enumerate(results['response']['docs']):
         match = False
         name = item.get('auth')
+        tag = item.get('tag')
         alternate = item.get('suggestall')
         if (len(alternate) > 0):
             alt = alternate[0]
@@ -166,10 +167,10 @@ def search(raw_query, query_type='/fast/all'):
             continue
         else:
             unique_fast_ids.append(fid)
-        score_1 = fuzz.token_sort_ratio(query, name)
-        score_2 = fuzz.token_sort_ratio(query, alt)
+        #score_1 = fuzz.token_sort_ratio(query, name)
+        #score_2 = fuzz.token_sort_ratio(query, alt)
         #Return a maximum score
-        score = max(score_1, score_2)
+        #score = max(score_1, score_2)
         if query == text.normalize(name, PY3):
             match = True
         elif query == text.normalize(alt, PY3):
@@ -177,7 +178,7 @@ def search(raw_query, query_type='/fast/all'):
         resource = {
             "id": fast_uri,
             "name": name,
-            "score": score,
+            "score": tag,
             "match": match,
             "type": query_type_meta
         }
