@@ -12,6 +12,10 @@ $ python reconcile.py --debug
 
 Michael Stephens wrote a [demo reconcilliation service](https://github.com/mikejs/reconcile-demo) that this code is based on.
 
-##Changes for this Fork
+## Changes for this Fork
 
-Updated to be able to run in either python 2 or 3.
+Instead of the 'score' variable bringing back the relevance score of terms, I instead changed this to bring back the MARC field of the terms the API suggests.  
+
+It was necessary to change 'score' because the extension currently only allows for a static number of variables, and 'score' was the least useful for our purposes.  
+
+The MARC field tag helps us determine what 'type' of terms we are dealing with, and even if we don't choose to use the FAST heading, we can organize them to reconcile to different sources like GeoNames, VIAF, etc.  
